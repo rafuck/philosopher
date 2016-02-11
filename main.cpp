@@ -55,11 +55,11 @@ private:
 
 public:
 	Supervisor(Supervisor const&) = delete;
-    void operator=(Supervisor const&)  = delete;
+	void operator=(Supervisor const&)  = delete;
 
 	static Supervisor& getInstance(){
 		static Supervisor instance;
-        return instance;
+		return instance;
 	}
 
 	void setNWorkers(size_t N){
@@ -86,7 +86,7 @@ public:
 		F[v_right.id]--;
 
 		v_right.put();
-    	v_left.put();
+		v_left.put();
 	}
 
 	const char * const flags() const{
@@ -102,12 +102,12 @@ void phil(int id, Resource &v_left, Resource &v_right){
 	printf("P %02d start eating: %s\n", id, s.flags());
 	
 	std::mt19937_64 rnd{std::random_device{}()};
-    std::uniform_int_distribution<> dist{500, 1000};
-    std::this_thread::sleep_for(std::chrono::milliseconds{dist(rnd)});
-    
-    s.put(v_left, v_right);
+	std::uniform_int_distribution<> dist{500, 1000};
+	std::this_thread::sleep_for(std::chrono::milliseconds{dist(rnd)});
 
-    printf("P %02d stop  eating: %s\n", id, s.flags());
+	s.put(v_left, v_right);
+
+	printf("P %02d stop  eating: %s\n", id, s.flags());
 }
 
 int main(){
