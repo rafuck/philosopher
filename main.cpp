@@ -11,7 +11,7 @@ class Resource{
 private:
 	std::mutex m;
 public:
-	int id;
+	size_t id;
 	void take(){
 		m.lock();
 	}
@@ -89,7 +89,7 @@ public:
 		v_left.put();
 	}
 
-	const char * const flags() const{
+	const char* flags() const{
 		return F;
 	}
 };
@@ -117,18 +117,18 @@ int main(){
 	Supervisor::getInstance().setNWorkers(N);
 	
 	Resource r[N];
-	for(int i=0; i<N; ++i){
+	for(size_t i=0; i<N; ++i){
 		r[i].id = i;
 	}
 
-	for(int i=0; i<N; ++i){
+	for(size_t i=0; i<N; ++i){
 		size_t ir = i;
 		size_t il = (i == 0) ? N-1 : i-1;
 		
 		worker[i] = std::thread(phil, i, std::ref(r[il]), std::ref(r[ir]));
 	}
 
-	for(int i=0; i<N; ++i){
+	for(size_t i=0; i<N; ++i){
 		worker[i].join();
 	}
 
