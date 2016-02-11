@@ -1,0 +1,8 @@
+
+*.o
+
+philosopher
+
+*.sublime-project
+
+*.sublime-workspace
