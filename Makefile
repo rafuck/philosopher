@@ -1,5 +1,5 @@
 all: philosopher
-CPP      = clang-omp++
+CPP      = clang++
 OBJECTS  = main.o
 FLAGS    = -std=c++11 -O3 -Wall -Wextra
 
