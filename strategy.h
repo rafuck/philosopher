@@ -3,6 +3,10 @@
 //##############################################################
 
 #include "resource.h"
+typedef enum{
+	StrategyMutex = 0,
+	StrategyAtomics
+} SupervisorStrategy;
 
 class ISupervisor
 {

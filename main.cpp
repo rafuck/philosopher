@@ -11,20 +11,24 @@
 #include "sleep.h"
 
 void phil(t_id id, Resource &v_left, Resource &v_right){
+	int n = rand()%10;
 	ISupervisor &s = Strategy::getSupervisor();
 
-	s.take(v_left, v_right);
+	for(int i=0; i<n; ++i){
+		s.take(v_left, v_right);
 
-	printf("P %02d start eating: %s\n", id, s.flags());
-	
-	sleepRandMilliseconds(300, 800);
+		printf("P %02d start eating: %s\n", id, s.flags());
+		
+		sleepRandMilliseconds(300, 800);
 
-	s.put(v_left, v_right);
+		s.put(v_left, v_right);
 
-	printf("P %02d stop  eating: %s\n", id, s.flags());
+		printf("P %02d stop  eating: %s\n", id, s.flags());
+	}
 }
 
 int main(int argc, char *argv[]){
+	printf("Hardware concurrency: %d\n", std::thread::hardware_concurrency());
 	const t_id N = 20;
 
 	SupervisorStrategy strategy = StrategyMutex;
