@@ -24,14 +24,8 @@ private:
 	std::atomic<unsigned int> f_locked;
 
 	bool try_take(const IResource &v_left, const IResource &v_right){
-		unsigned int f_check = v_left.flag() | v_right.flag();
-		unsigned int old = f_locked.fetch_xor(f_check);
-		if (old & f_check){
-			f_locked.fetch_xor(f_check);
-			return false;
-		}
-
-		return true;
+		/* ??????? */
+		return false;
 	}
 
 	SupervisorAtomics(){
@@ -68,9 +62,8 @@ public:
 
 	void take(IResource &v_left, IResource &v_right){
 		while (!try_take(v_left, v_right)){
-			//
+			continue;
 		}
-
 
 		F[v_left.id()]++;
 		F[v_right.id()]++;
@@ -80,7 +73,7 @@ public:
 		F[v_left.id()]--;
 		F[v_right.id()]--;
 
-		f_locked.fetch_xor(v_left.flag() | v_right.flag());
+		/* ????? */
 	}
 
 	const char* flags() const{
@@ -94,11 +87,14 @@ private:
 	char *F;
 
 	bool try_take(IResource &v_left, IResource &v_right){
-		std::lock_guard<std::mutex> lock(m);
-
-		if (!v_right.try_take()){
-			v_left.put();
-			return false;
+		IResource &v1 = std::ref((v_left.id() > v_right.id()) ? v_left : v_right);
+		IResource &v2 = std::ref((v_left.id() < v_right.id()) ? v_left : v_right);
+		
+		if (v1.try_take()){
+			if (!v2.try_take()){
+				v1.put();
+				return false;
+			}
 		}
 
 		return true;
@@ -136,9 +132,8 @@ public:
 	}
 
 	void take(IResource &v_left, IResource &v_right){
-		v_left.take();
 		while(!try_take(v_left, v_right)){
-			v_left.take();
+			continue;
 		}
 
 		F[v_left.id()]++;
