@@ -23,7 +23,7 @@ private:
 	char *F;
 	std::atomic<unsigned int> f_locked;
 
-	bool try_take(const IResource &v_left, const IResource &v_right){
+	bool try_take(IResource &v_left, IResource &v_right){
 		/* ??????? */
 		return false;
 	}
@@ -83,18 +83,16 @@ public:
 
 class SupervisorMutex:public ISupervisor{
 private:
-	std::mutex m;
 	char *F;
 
 	bool try_take(IResource &v_left, IResource &v_right){
 		IResource &v1 = std::ref((v_left.id() > v_right.id()) ? v_left : v_right);
 		IResource &v2 = std::ref((v_left.id() < v_right.id()) ? v_left : v_right);
 		
-		if (v1.try_take()){
-			if (!v2.try_take()){
-				v1.put();
-				return false;
-			}
+		v1.take();
+		if (!v2.try_take()){
+			v1.put();
+			return false;
 		}
 
 		return true;

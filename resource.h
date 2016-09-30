@@ -17,7 +17,7 @@ public:
 
 class Resource: public IResource{
 private:
-	std::mutex m;
+	mutable std::mutex m;
 	unsigned int _flag;
 	t_id _id;
 public:
